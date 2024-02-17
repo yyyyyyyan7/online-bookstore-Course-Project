@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>购物车</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/layui/2.6.8/css/layui.css"
+          integrity="sha384-o8I/ti/43Ai6/jzjNpRJRfyJGg/UqDOqF6n3K51jNiSA/gTxEUzk6Zew06cf6zQY"
+          crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        .layui-container {
+            padding: 20px;
+            background-color: #fff;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2e6f2e; /* Darker Matcha Green */
+        }
+
+        .layui-btn-group {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            color: #444; /* Dark Gray */
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #2e6f2e; /* Darker Matcha Green */
+        }
+
+        .breadcrumb a {
+            color: #65a368; /* Darker Matcha Green */
+        }
+
+        .breadcrumb a:hover {
+            color: #3d8440; /* Lighter Matcha Green */
+        }
+
+        .buyBtn,
+        .deleteSelectedBtn {
+            background-color: #65a368; /* Darker Matcha Green */
+            color: white;
+        }
+
+        .buyBtn:hover,
+        .deleteSelectedBtn:hover {
+            background-color: #3d8440; /* Lighter Matcha Green */
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layui-container">
+    <div class="breadcrumb">
+        <span class="layui-breadcrumb">
+            <a th:href="@{/index}">首页</a>
+            <a th:href="@{/index/books}">返回</a>
+            <a><cite>我的购物车</cite></a>
+            <a>
+                [[${session.user.userName}]]
+            </a>
+            <a>
+                [[${session.user.deposit}]]
+            </a>
+        </span>
+    </div>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>订单ID</th>
+        <th>用户ID</th>
+        <th>订单状态</th>
+        <th>数目</th>
+        <th>书id</th>
+        <th>价格</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item: ${order}">
+        <td class="oid" th:text="${item.orderId}"></td>
+        <td class="uid" th:text="${item.userId}"></td>
+        <td class="status" th:text="${item.status}"></td>
+        <td class="bnum" th:text="${item.booknum}"></td>
+        <td class="bid" th:text="${item.bookid}"></td>
+        <td th:text="${item.totalPrice}"></td>
+        <td>
+            <button type="button" class="layui-btn layui-btn-normal buyBtn">立即购买</button>
+            <button type="button" class="layui-btn layui-btn-danger deleteSelectedBtn">删除选中</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $(".buyBtn").click(function () {
+            var orderId = $(this).closest("tr").find("td:eq(0)").text();
+            var userId = $(this).closest("tr").find("td:eq(1)").text();
+            var bookId = $(this).closest("tr").find("td:eq(4)").text();
+            var quantity = $(this).closest("tr").find("td:eq(3)").text();
+            var totalPrice = $(this).closest("tr").find("td:eq(5)").text();
+
+            $.ajax({
+                type: "GET",
+                url: "/api/books/" + bookId,
+                success: function (bookDetails) {
+                    if (bookDetails.stock >= quantity) {
+                        performPurchase(orderId, userId, bookId, quantity, totalPrice);
+                    } else {
+                        alert("库存不足！");
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        function performPurchase(orderId, userId, bookId, quantity, totalPrice) {
+            $.ajax({
+                type: "POST",
+                url: "/api/purchase",
+                data: {
+                    orderId: orderId,
+                    userId: userId,
+                    bookId: bookId,
+                    quantity: quantity,
+                    totalPrice: totalPrice
+                },
+                success: function (response) {
+                    location.reload();
+                    console.log(response);
+                },
+                error: function (error) {
+                    alert("余额不足 ");
+                }
+            });
+        }
+
+        $(".deleteSelectedBtn").click(function () {
+            var orderId = $(this).closest("tr").find("td:eq(0)").text();
+            $.ajax({
+                type: "POST",
+                url: "/api/orders/delete/" + orderId,
+                success: function (response) {
+                    location.reload();
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

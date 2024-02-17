@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.BookMapper">
+  <resultMap id="BaseResultMap" type="com.example.demo.entity.Book">
+    <id column="bid" jdbcType="INTEGER" property="bookId" />
+    <result column="bookname" jdbcType="VARCHAR" property="bookName" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="image" jdbcType="VARCHAR" property="image" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="num" jdbcType="INTEGER" property="stock" />
+  </resultMap>
+
+<!--image没定义-->
+  <sql id="Base_Column_List">
+    bid, bookname, author, image, price, num
+  </sql>
+
+  <select id="selectByBookId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from book
+    where bid = #{bookId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByBookId" parameterType="java.lang.Integer">
+    delete from book
+    where bid = #{bookId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.example.demo.entity.Book">
+    insert into book
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+     
+      <if test="bookName != null">
+        bookname,
+      </if>
+      <if test="author != null">
+        author,
+      </if>
+      <if test="image != null">
+        image,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="stock != null">
+        num
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="bookName != null">
+        #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null">
+        #{author,jdbcType=VARCHAR},
+      </if>
+    
+      <if test="image != null">
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="stock != null">
+        #{stock,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByBookId" parameterType="com.example.demo.entity.Book">
+    update book
+    <set>
+      <if test="bookName != null">
+        bookname = #{bookName,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null">
+        author = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null">
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="stock != null">
+        num = #{stock,jdbcType=INTEGER},
+      </if>
+    </set>
+    where bid = #{bookId,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectByBooks" parameterType="com.example.demo.entity.Book" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from book
+    <where>
+      <if test="bookId !=null ">
+        bid = #{bookId,jdbcType=INTEGER}
+      </if>
+      <if test="bookName != null">
+      and  bookname = #{bookName,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+</mapper>

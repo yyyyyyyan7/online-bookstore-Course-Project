@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.example.demo.entity.Order">
+    <id column="oid" jdbcType="INTEGER" property="orderId" />
+    <result column="uid" jdbcType="INTEGER" property="userId" />
+    <result column="bid" jdbcType="INTEGER" property="bookid" />
+    <result column="book_num" jdbcType="INTEGER" property="booknum" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="username" jdbcType="VARCHAR" property="userName" />
+    <result column="totalPrice" jdbcType="DOUBLE" property="totalPrice" />
+
+<!--这里要添加book信息-->
+     
+    
+    <!-- <collection property="orderItems" ofType="com.jlu.bookshop.entity.OrderItem" column="order_id"
+                select="com.jlu.bookshop.dao.OrderItemMapper.selectByOrderId"/> -->
+  </resultMap>
+  <sql id="Base_Column_List">
+    oid, uid, status, bid, book_num,username,totalPrice
+  </sql>
+
+  <select id="selectByOrderId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from orders
+    where oid = #{orderId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from orders
+    where uid = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from orders
+    where username = #{userName,jdbcType=VARCHAR} and status="not done"
+  </select>
+
+  <delete id="deleteByOrderId" parameterType="java.lang.Integer">
+    delete from orders
+    where oid = #{orderId,jdbcType=INTEGER}
+  </delete>
+
+  <!--插入订单-->
+  <insert id="insert" parameterType="com.example.demo.entity.Order"
+        keyProperty="orderId" useGeneratedKeys="true">
+    insert into orders (uid, bid, book_num,username,totalPrice)
+    values (#{userId,jdbcType=INTEGER},#{bookid,jdbcType=INTEGER},#{booknum,jdbcType=INTEGER},#{userName,jdbcType=VARCHAR},#{totalPrice,jdbcType=DOUBLE} )
+  </insert>
+
+  <update id="updateByOrderId" parameterType="com.example.demo.entity.Order">
+    update orders
+    <set>    
+     status = "done"  
+    </set>
+    where oid = #{orderId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from orders
+  </select>
+
+  <select id="searchOrders" resultMap="BaseResultMap" parameterType="com.example.demo.entity.Order">
+    select
+    <include refid="Base_Column_List" />
+    from orders
+    <where>
+      <if test="orderId != null">
+        oid = #{orderId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+</mapper>
