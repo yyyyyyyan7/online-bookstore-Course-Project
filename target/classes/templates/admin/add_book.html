@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="_adminfragment::head(~{::title},~{})">
+    <meta charset="utf-8">
+    <title>上架新书</title>
+    <link rel="stylesheet" type="text/css" href="../../static/lib/layui/css/layui.css" />
+    <script src="../../static/lib/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #2e6f2e; /* Darker Matcha Green */
+            margin: 0;
+
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+
+            background-color:  #2e6f2e; /* Darker Matcha Green */;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .layui-form-item {
+            margin-bottom: 20px;
+        }
+
+        .layui-input-block {
+            width: 80%;
+            margin-left: 10%;
+        }
+
+        .upload-btn {
+            width: 80%;
+            margin-left: 10%;
+            color: #2e6f2e; /* Darker Matcha Green */
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .layui-btn-primary {
+            margin-left: 10px;
+            color: #2e6f2e; /* Darker Matcha Green */
+        }
+
+        .submit-btn {
+            text-align: center;
+            color: #2e6f2e; /* Darker Matcha Green */
+        }
+        body {
+            background-color: #eaf7eb; /* Matcha Green */
+            color: #444;
+        }
+
+        
+        
+    </style>
+</head>
+
+<body class="layui-layout-body">
+    <div class="container">
+        <div class="form-title">上架新书</div>
+        <form action="" class="layui-form" lay-filter="addBook">
+            <div class="layui-form-item">
+                <label class="layui-form-label">书名</label>
+                <div class="layui-input-block">
+                    <input type="text" id="bookName" name="bookName" required lay-verify="required" autocomplete="off"
+                        class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">作者</label>
+                <div class="layui-input-block">
+                    <input type="text" id="author" name="author" required lay-verify="required" autocomplete="off"
+                        class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">价格</label>
+                <div class="layui-input-block">
+                    <input type="number" min="0" id="price" name="price" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">库存</label>
+                <div class="layui-input-block">
+                    <input type="number" min="0" id="stock" name="stock" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+       
+
+            <div class="layui-form-item submit-btn">
+                <button class="layui-btn layui-bg-blue" lay-submit lay-filter="addBookBtn">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                <button type="reset" class="layui-btn layui-btn-primary"><a th:href="@{/admin/logout}">退出</a></button>
+                <button type="reset" class="layui-btn layui-btn-primary"><a th:href="@{/admin/book_manage}">返回</a></button>
+        
+                
+            </div>
+        </form>
+    </div>
+</body>
+<script type="text/javascript">
+    layui.use(['table', 'form', 'jquery', 'layer', 'upload','element'], function () {
+        var table = layui.table,
+            $ = layui.jquery,
+            layer = layui.layer,
+            upload = layui.upload,
+            element = layui.element,
+            form = layui.form;
+
+   
+        //提交
+        form.on('submit(addBookBtn)', function (data) {
+            var data = form.val('addBook');
+            $.post('/book/insert',data, function (res) {
+                if (res.code != 0) {
+                    return layer.msg(res.msg, {icon: 2});
+                }
+                return layer.msg("添加成功", {icon: 1});
+            });
+            return false;
+        });
+    });
+</script>
+</html>

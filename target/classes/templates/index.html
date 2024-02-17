@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>买书 ${session.user.banlance}</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/layui/2.6.8/css/layui.css"
+          integrity="sha384-o8I/ti/43Ai6/jzjNpRJRfyJGg/UqDOqF6n3K51jNiSA/gTxEUzk6Zew06cf6zQY"
+          crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #eaf7eb; /* Matcha Green */
+            color: #444;
+        }
+
+        .layui-btn-group button {
+            background-color: #65a368; /* Darker Matcha Green */
+            color: white;
+        }
+
+        .layui-btn-group a {
+            color: #2e6f2e; /* Darker Matcha Green */
+        }
+
+        .page-title {
+            color: #2e6f2e; /* Darker Matcha Green */
+        }
+
+        table th, table td {
+            background-color: #f5f5f5; /* Light Gray */
+        }
+
+        .addToCartBtn {
+            background-color: #65a368; /* Darker Matcha Green */
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layui-btn-group">
+    <button class="layui-btn layui-btn-normal"><a th:href="@{/register}">注册</a></button>
+    <button class="layui-btn layui-btn-normal"><a th:href="@{/admin/login}">管理员登录</a></button>
+    <button class="layui-btn layui-btn-normal"><a th:href="@{/logout}">退出</a></button>
+    <button class="layui-btn layui-btn-normal"><a th:href="@{|/${session.user.userName}/shopping_cart|}">购物车</a></button>
+
+    <a>
+        [[${session.user.userName}]]
+    </a>
+    <a>
+        [[${session.user.deposit}]]
+    </a>
+</div>
+
+<div class="layui-container">
+    <div class="page-title">图书购买</div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>书名</th>
+            <th>作者</th>
+            <th>价格</th>
+            <th>库存</th>
+            <th>数量</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tr th:each="item: ${books}" id="bookRow" data-book-id="${item.bookId}" data-book-price="${item.price}">
+            <td th:text="${item.bookId}"></td>
+            <td th:text="${item.bookName}"></td>
+            <td th:text="${item.author}"></td>
+            <td th:text="${item.price}"></td>
+            <td th:text="${item.stock}"></td>
+            <td>
+                <input type="number" class="quantityInput" value="1" min="1" max="${item.stock}">
+            </td>
+            <td>
+                <button type="button" class="layui-btn layui-btn-normal addToCartBtn">加入购物车</button>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script src="https://cdn.staticfile.org/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.addToCartBtn').on('click', function () {
+
+            var $row = $(this).closest('tr');
+            var bookId = $row.closest("tr").find("td:eq(0)").text();
+            var quantity = $row.find('.quantityInput').val();
+
+            var bookPrice = $row.closest("tr").find("td:eq(3)").text();
+            $.ajax({
+                type: 'POST',
+                url: "/api/addToCart/"+ bookId, 
+                data: {
+                    userName: [[${session.user.userName}]],
+
+                    quantity: quantity,
+                    bookPrice:bookPrice
+                },
+                success: function (response) {
+                    console.log('Item added to the cart:', response);
+                },
+                error: function (error) {
+                    console.error('Error adding item to the cart:', error);
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

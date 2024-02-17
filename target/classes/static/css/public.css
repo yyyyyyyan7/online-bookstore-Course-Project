@@ -1,0 +1,124 @@
+html {
+    background-color: #eaf7eb; /* Matcha Green */
+    color: #444;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.header,
+.footer {
+    background-color: #65a368; /* Darker Matcha Green */
+    height: 60px;
+}
+
+.footer {
+    text-align: center;
+    line-height: 60px;
+    font-size: 18px;
+    color: white;
+    width: 100%;
+}
+
+.logo a {
+    color: #2e6f2e; /* Darker Matcha Green */
+    font-size: large;
+    font-weight: bold;
+    font-family: sans-serif;
+    line-height: 60px;
+}
+
+.logo a:hover {
+    color: #3d8440; /* Lighter Matcha Green */
+}
+
+.search-bar {
+    margin: 10px 0px;
+}
+
+.search-input {
+    width: 700px;
+    margin: 0px auto;
+}
+
+.search-input input {
+    width: 70%;
+    margin-right: 5%;
+    float: left;
+}
+
+.search-input button {
+    width: 25%;
+}
+
+.book-card {
+    width: 150px;
+    background-color: #f5f5f5; /* Light Gray */
+    margin: 10px 19px;
+    padding: 18px;
+    border-radius: 10px;
+    float: left;
+}
+
+.book-card .name,
+.book-card .author,
+.book-card .price {
+    margin-top: 3px;
+}
+
+.book-card a img {
+    text-align: center;
+    width: 150px;
+}
+
+.book-card p {
+    overflow: hidden;
+    height: 18px;
+    word-break: break-all;
+}
+
+.img-hover {
+    color: #5a2e5a; /* Dark Purple */
+    text-decoration: underline;
+}
+
+.book-card .name a:hover {
+    color: #7d3f7d; /* Lighter Purple */
+    text-decoration: underline;
+}
+
+.book-card .author {
+    color: #aaa;
+}
+
+.book-card .price {
+    color: #8e4b8e; /* Darker Purple */
+    font-weight: bold;
+}
+
+/* 登录注册表单 */
+.login-form {
+    background-color: #eaf7eb; /* Matcha Green */
+    width: 350px;
+    padding: 20px 75px 20px 0px;
+    border-radius: 10px;
+    margin: 20px auto;
+    box-shadow: 12px 11px 2px 0 rgba(0, 0, 0, 0.42);
+}
+
+.login-box h1 {
+    text-align: center;
+    font-weight: bold;
+    color: #393939;
+}
+
+.login-box .login-form a:hover {
+    color: #1d3c1d; /* Darker Matcha Green */
+    text-decoration: underline;
+}
+
+.breadcrumb {
+    margin: 10px 50px;
+}

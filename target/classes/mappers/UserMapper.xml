@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.UserMapper">
+  <resultMap id="BaseResultMap" type="com.example.demo.entity.User">
+    <id column="uid" jdbcType="INTEGER" property="userId" />
+    <result column="username" jdbcType="VARCHAR" property="userName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="balance" jdbcType="DECIMAL" property="deposit" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    uid, username, password, balance
+  </sql>
+
+  <select id="selectByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where uid = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByUserId" parameterType="java.lang.Integer">
+    delete from user
+    where uid = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.demo.entity.User">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userName != null">
+        username,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="deposit != null">
+        balance,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="deposit != null">
+        #{deposit,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByUserId" parameterType="com.example.demo.entity.User">
+    update user
+    <set>
+      <if test="userName != null">
+        username = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="deposit != null">
+        balance = #{deposit,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where uid = #{userId,jdbcType=INTEGER}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from user
+  </select>
+  <select id="selectByUserName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from user
+    where username=#{userName,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByAdminName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    managername,password
+    from manager
+    where managername=#{userName,jdbcType=VARCHAR}
+  </select>
+
+  <select id="searchUsers" resultMap="BaseResultMap" parameterType="com.example.demo.entity.User">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    <where>
+      <if test="userName != null">
+        username = #{userName,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+
+</mapper>
